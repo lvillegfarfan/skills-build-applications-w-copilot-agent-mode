@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -25,9 +26,15 @@ SECRET_KEY = 'django-insecure-&9ne1(%bt21(uo6*#*g(ulv9v)@t@tp^)%g-&-1pox=c6zq$%$
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+CODESPACE_NAME = os.environ.get('CODESPACE_NAME')
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    *([f'{CODESPACE_NAME}-8000.app.github.dev'] if CODESPACE_NAME else []),
+]
 
-ALLOWED_HOSTS = ['*']
-
+USE_X_FORWARDED_HOST = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # Application definition
 
@@ -141,4 +148,4 @@ CORS_ALLOW_METHODS = ['*']
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'

@@ -13,16 +13,26 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+import os
 from django.contrib import admin
 from django.urls import path, include
+from django.views.generic.base import RedirectView
 from rest_framework.routers import DefaultRouter
 from octofit_tracker import views
 
 router = DefaultRouter()
-# Register your viewsets here, e.g., router.register(r'users', views.UserViewSet)
+router.register(r'users', views.UserViewSet)
+router.register(r'teams', views.TeamViewSet)
+router.register(r'activities', views.ActivityViewSet)
+router.register(r'leaderboards', views.LeaderboardViewSet)
+router.register(r'workouts', views.WorkoutViewSet)
+
+codespace_name = os.environ.get('CODESPACE_NAME')
+base_api_redirect = '/api/' if not codespace_name else f'https://{codespace_name}-8000.app.github.dev/api/'
 
 urlpatterns = [
-    path('', include(router.urls)),
+    path('', RedirectView.as_view(url=base_api_redirect, permanent=False)),
+    path('api/', include(router.urls)),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('admin/', admin.site.urls),
 ]
